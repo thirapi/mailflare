@@ -20,6 +20,11 @@ import { useConversationView } from "./use-conversation-view";
 import { useTwoColumnReading } from "./use-two-column-reading";
 import type { MessageListStateControl, MessageSplitLayoutProps, SelectedMessage } from "./types";
 
+/** The list keeps at least 250px and leaves the reading pane at least 280px. */
+function clampListWidth(listWidth: number, containerWidth: number): number {
+	return Math.max(250, Math.min(listWidth, (containerWidth || 1000) - 280));
+}
+
 export function MessageSplitLayout({
 	children,
 	config,
@@ -48,7 +53,11 @@ export function MessageSplitLayout({
 	const selectedMessageId = pathname.startsWith(detailPrefix)
 		? pathname.slice(detailPrefix.length).split("/")[0]
 		: undefined;
-	const renderedListWidth = Math.max(250, Math.min(listWidth, (containerWidth || 1000) - 280));
+	const renderedListWidth = clampListWidth(listWidth, containerWidth);
+	const listWidthRef = useRef(listWidth);
+	useLayoutEffect(() => {
+		listWidthRef.current = listWidth;
+	}, [listWidth]);
 	const grouped = conversationView && config.folder !== "drafts";
 	const listState = useMemo<MessageListStateControl>(() => ({
 		selectedMessages,
@@ -104,8 +113,14 @@ export function MessageSplitLayout({
 		}
 		const container = containerRef.current;
 		if (!container) return;
+		// The container resizes on every frame of a sidebar animation. Re-rendering the list each time made that
+		// animation stutter, so the width is only stored when it changes the clamped list width.
+		const update = () => setContainerWidth((previous) => {
+			const next = container.clientWidth;
+			return clampListWidth(listWidthRef.current, previous) === clampListWidth(listWidthRef.current, next) ? previous : next;
+		});
 		setContainerWidth(container.clientWidth);
-		const observer = new ResizeObserver(() => setContainerWidth(container.clientWidth));
+		const observer = new ResizeObserver(update);
 		observer.observe(container);
 		return () => observer.disconnect();
 	}, [selectedMessageId, setForcedMinimal]);
@@ -122,10 +137,10 @@ export function MessageSplitLayout({
 
 	return (
 		<MessageListStateContext.Provider value={listState}>
-			<div ref={containerRef} className="h-full min-h-0 overflow-hidden lg:grid lg:transition-[grid-template-columns] lg:ease-in-out motion-reduce:transition-none" style={{ gridTemplateColumns: twoColumnReading ? `${listVisible ? renderedListWidth : 0}px minmax(0,1fr)` : "minmax(0,1fr)", transitionDuration: widthReady ? "300ms" : "0ms" }}>
+			<div ref={containerRef} className="h-full min-h-0 overflow-hidden lg:grid lg:transition-[grid-template-columns] layout-motion motion-reduce:transition-none" style={{ gridTemplateColumns: twoColumnReading ? `${listVisible ? renderedListWidth : 0}px minmax(0,1fr)` : "minmax(0,1fr)", transitionDuration: widthReady ? undefined : "0ms" }}>
 				{twoColumnReading && (
 				<aside className={`relative hidden min-h-0 min-w-0 overflow-hidden bg-white lg:block ${listVisible ? "border-r border-neutral-200" : "pointer-events-none"}`} aria-hidden={!listVisible} inert={!listVisible}>
-					<div className={`h-full overflow-hidden transition-transform duration-300 ease-in-out motion-reduce:transition-none ${listVisible ? "translate-x-0" : "-translate-x-full"}`} style={{ width: renderedListWidth }}>
+					<div className={`h-full overflow-hidden transition-transform layout-motion motion-reduce:transition-none ${listVisible ? "translate-x-0" : "-translate-x-full"}`} style={{ width: renderedListWidth }}>
 					<MessageFolderPage
 						config={config}
 						compact
@@ -134,6 +149,7 @@ export function MessageSplitLayout({
 					</div>
 					<ResizeHandle
 						label={t("list.resize")}
+						placement="inside"
 						onResizeStart={() => { startWidth.current = listWidth; resizedWidth.current = listWidth; }}
 						onResize={(delta) => {
 							const requestedWidth = startWidth.current + delta;

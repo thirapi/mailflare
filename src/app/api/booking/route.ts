@@ -10,7 +10,6 @@ import { getEnv } from "@/lib/cloudflare";
 import { newId } from "@/lib/ids";
 import { ensureBookingUsername } from "@/lib/booking/username";
 import { validBookingHostIds } from "@/lib/booking/hosts";
-import { getLicenseEntitlements } from "@/lib/licenses/service";
 import { calendarAccessError } from "@/lib/calendar/api-auth";
 import { ConfirmationTemplatesUnavailableError, saveConfirmationTemplate, withConfirmationTemplates } from "@/lib/booking/confirmation-templates";
 import { parseConfirmationTemplateInput } from "@/lib/booking/confirmation-utils";
@@ -25,7 +24,7 @@ export async function GET(request: Request) {
 	const db = getDb(env);
 	const events = await withConfirmationTemplates(db, await db.select().from(bookingEvents).where(eq(bookingEvents.userId, user.id)).orderBy(bookingEvents.createdAt));
 	const [currentUser] = await db.select({ avatarKey: users.avatarKey }).from(users).where(eq(users.id, user.id)).limit(1);
-	const canManageHosts = user.role === "admin" && (await getLicenseEntitlements(env)).canShareMailboxes;
+	const canManageHosts = user.role === "admin";
 	return NextResponse.json({ events, username, currentUser: { id: user.id, name: user.name, email: user.email, hasAvatar: !!currentUser?.avatarKey }, canManageHosts });
 }
 
@@ -42,7 +41,7 @@ export async function POST(request: Request) {
 	if (!input) return NextResponse.json({ error: "Enter valid booking details and availability." }, { status: 400 });
 	if (confirmation === null) return NextResponse.json({ error: "Check the confirmation email's subject and message." }, { status: 400 });
 	const db = getDb(env);
-	const canManageHosts = user.role === "admin" && (await getLicenseEntitlements(env)).canShareMailboxes;
+	const canManageHosts = user.role === "admin";
 	const hostIds = await validBookingHostIds(db, user.id, input.hostIds, canManageHosts);
 	if (!hostIds) return NextResponse.json({ error: "Choose users from the host list." }, { status: 400 });
 	const [taken] = await db.select({ id: bookingEvents.id }).from(bookingEvents).where(and(eq(bookingEvents.userId, user.id), eq(bookingEvents.slug, input.slug))).limit(1);

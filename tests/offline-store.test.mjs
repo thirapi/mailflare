@@ -39,6 +39,9 @@ test("old entries are not served and eviction drops the oldest first", () => {
 test("without IndexedDB the fallback passes results and errors through", async () => {
 	assert.equal(await store.withOfflineFallback("k", async () => 42), 42);
 	await assert.rejects(store.withOfflineFallback("k", async () => { throw new TypeError("Failed to fetch"); }), TypeError);
+	assert.equal(store.isServingOffline(), true, "a network failure marks the server unreachable even without a saved copy");
+	await store.withOfflineFallback("k", async () => 2);
+	assert.equal(store.isServingOffline(), false);
 	await assert.rejects(store.withOfflineFallback("k", async () => { throw new Error("server said no"); }), /server said no/);
 	assert.equal(await store.readOffline("k"), undefined);
 	await store.clearOffline();

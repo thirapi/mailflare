@@ -20,7 +20,8 @@ let dbPromise: Promise<IDBDatabase | null> | null = null;
 let servingOffline = false;
 
 /**
- * True while the last answer came from the offline copy. `navigator.onLine` alone is not enough: it stays true on a
+ * True while the server is unreachable: the last request failed on the network, and a saved copy (if any) was shown
+ * instead. `navigator.onLine` alone is not enough: it stays true on a
  * connection that cannot reach the server (captive portals, a dead mobile signal, and after reloading while offline).
  */
 export function isServingOffline(): boolean {
@@ -119,9 +120,10 @@ export async function withOfflineFallback<T>(key: string, load: () => Promise<T>
 		return value;
 	} catch (error) {
 		if (!isNetworkFailure(error)) throw error;
+		// Unreachable either way: with a saved copy the app shows it, without one it shows the offline state.
+		setServingOffline(true);
 		const cached = await readOffline<T>(key);
 		if (cached === undefined) throw error;
-		setServingOffline(true);
 		return cached;
 	}
 }

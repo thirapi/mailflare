@@ -27,6 +27,8 @@ import { dispatchMessageCountsDelta, toggleMessageStar } from "./message-list-ro
 import { useMessageNavigation } from "./message-navigation";
 import { rememberOpenedUnreadMessage } from "./message-detail-navigation-utils";
 import { useConversationView } from "./use-conversation-view";
+import { useListDensity } from "./use-list-density";
+import { narrowRowPaddingClass, showsNarrowPreview, wideRowHeightClass } from "./list-density-utils";
 import { OpenedIndicator } from "./message-open-status";
 import { MessageNotesPopover, NoteBadge } from "./message-notes-popover";
 import type { MessageFolderPageProps, MessageListRowProps, RowMessageAction } from "./types";
@@ -83,6 +85,7 @@ function MessageListRowComponent({
 	active = false,
 	opening = false,
 	compact = false,
+	density = "default",
 	currentAccountName,
 	onSelectedChange,
 	onMessageAction,
@@ -166,7 +169,7 @@ function MessageListRowComponent({
 		const compactRow = (
 			<div
 				role={swipeable ? undefined : "listitem"}
-				className={`group grid grid-cols-[20px_minmax(0,1fr)] gap-3 border-l-2 px-4 py-3 transition-colors ${active || opening
+				className={`group grid grid-cols-[20px_minmax(0,1fr)] gap-3 border-l-2 px-4 ${narrowRowPaddingClass(density)} transition-colors ${active || opening
 					? "border-l-blue-600 bg-blue-50"
 					: selected
 						? "border-l-transparent bg-neutral-50"
@@ -216,9 +219,11 @@ function MessageListRowComponent({
 					>
 						{message.subject ?? t("list.noSubject")}
 					</span>
-					<span className="mt-0.5 block truncate text-xs leading-5 text-neutral-500">
-						{preview}
-					</span>
+					{showsNarrowPreview(density) && (
+						<span className="mt-0.5 block truncate text-xs leading-5 text-neutral-500">
+							{preview}
+						</span>
+					)}
 				</Link>
 			</div>
 		);
@@ -245,7 +250,7 @@ function MessageListRowComponent({
 	}
 
 	const className =
-		`group relative grid min-h-12 w-full grid-cols-[24px_32px_minmax(160px,80px)_1fr_auto] items-center gap-3 px-6 text-left text-sm hover:z-10 hover:bg-[#f2f6fc] hover:shadow-sm has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-inset has-[a:focus-visible]:ring-blue-600 ${active || selected || opening ? "bg-blue-50" : ""
+		`group relative grid ${wideRowHeightClass(density)} w-full grid-cols-[24px_32px_minmax(160px,80px)_1fr_auto] items-center gap-3 px-6 text-left text-sm hover:z-10 hover:bg-[#f2f6fc] hover:shadow-sm has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-inset has-[a:focus-visible]:ring-blue-600 ${active || selected || opening ? "bg-blue-50" : ""
 		} ${draggable ? "cursor-grab active:cursor-grabbing" : ""}`;
 	const content = (
 		<>
@@ -376,6 +381,7 @@ export function MessageFolderPage({
 	const [openingMessageId, setOpeningMessageId] = useState<string | null>(null);
 	const openingTimer = useRef<number | null>(null);
 	const [conversationView] = useConversationView();
+	const [density] = useListDensity();
 	const visibleOpeningMessageId = openingMessageId === selectedMessageId ? null : openingMessageId;
 	const todayKey = getTodayKey();
 
@@ -692,6 +698,7 @@ export function MessageFolderPage({
 							opening={message.id === visibleOpeningMessageId}
 							onOpening={markMessageOpening}
 							compact={compact || isMobile}
+							density={density}
 							currentAccountName={currentAccountName}
 							onSelectedChange={updateSelectedMessage}
 							onMessageAction={handleMessageAction}

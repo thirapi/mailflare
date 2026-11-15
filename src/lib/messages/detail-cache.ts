@@ -1,4 +1,5 @@
 import { AUTH_SESSION_CHANGED_EVENT, authFetch } from "@/lib/auth/client";
+import { withOfflineFallback } from "@/lib/offline/store";
 import type { Message } from "@/hooks/types";
 import type { CachedMessageDetail } from "./detail-cache-types";
 
@@ -58,11 +59,19 @@ export async function fetchCachedMessageDetail(messageId: string, force = false)
 	if (!force && cached) return cached;
 	if (detailRequests.has(messageId)) return detailRequests.get(messageId) ?? {};
 	const requestGeneration = generation;
-	const request = authFetch(`/api/messages/${messageId}`, { cache: "no-store" })
-		.then(async (response) => {
-			const data = await response.json() as CachedMessageDetail;
+	let ok = false;
+	const request = withOfflineFallback(
+		`detail:${messageId}`,
+		async () => {
+			const response = await authFetch(`/api/messages/${messageId}`, { cache: "no-store" });
+			ok = response.ok;
+			return await response.json() as CachedMessageDetail;
+		},
+		(data) => ok && !data.error && !!data.message,
+	)
+		.then((data) => {
 			if (requestGeneration !== generation) throw new Error("Message request invalidated");
-			if (response.ok && !data.error) cacheDetail(messageId, data);
+			if (ok && !data.error) cacheDetail(messageId, data);
 			return data;
 		})
 		.finally(() => { if (detailRequests.get(messageId) === request) detailRequests.delete(messageId); });

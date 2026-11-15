@@ -26,6 +26,7 @@ export type MessageListRowProps = {
 	active?: boolean;
 	opening?: boolean;
 	compact?: boolean;
+	density?: import("./list-density-utils").ListDensity;
 	currentAccountName?: string;
 	onSelectedChange: (messageId: string, selected: boolean) => void;
 	onMessageAction: (messageId: string, action: RowMessageAction) => Promise<void>;

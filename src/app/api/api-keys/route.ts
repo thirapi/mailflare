@@ -53,7 +53,7 @@ export async function POST(request: Request) {
 	const { fullKey, prefix, hash, sha256 } = isAppPassword ? await generateAppPassword() : await generateApiKey();
 	const db = getDb(env);
 	const mailboxIds = [...new Set(parsed.data.mailboxIds)];
-	if (!mailboxIds.length && parsed.data.scopes.some((scope) => !scope.startsWith("calendar:"))) return NextResponse.json({ error: "Choose a mailbox for mail permissions" }, { status: 400 });
+	if (!mailboxIds.length && parsed.data.scopes.some((scope) => !scope.startsWith("calendar:") && !scope.startsWith("contacts:"))) return NextResponse.json({ error: "Choose a mailbox for mail permissions" }, { status: 400 });
 	for (const mailboxId of mailboxIds) if (!(await getMailboxAccessLevel(db, user, mailboxId))?.canRead) return NextResponse.json({ error: "Mailbox not found" }, { status: 403 });
 	const id = newId("key");
 	await db.insert(apiKeys).values({

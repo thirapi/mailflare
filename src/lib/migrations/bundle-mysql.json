@@ -336,6 +336,13 @@
       "statements": [
         "ALTER TABLE `messages` ADD `invite_response` text;"
       ]
+    },
+    {
+      "name": "0012_calendar_dav.sql",
+      "statements": [
+        "ALTER TABLE `calendar_events` ADD `dav_uid` text;",
+        "ALTER TABLE `calendar_events` ADD `dav_name` text;"
+      ]
     }
   ]
 }

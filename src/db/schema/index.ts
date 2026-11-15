@@ -660,6 +660,10 @@ export const calendarEvents = sqliteTable(
 		inviteSequence: integer("invite_sequence"),
 		/** JSON map of guest address to accepted, tentative or declined, filled from their replies to an invitation this user sent. */
 		attendeeResponses: text("attendee_responses"),
+		/** UID a CalDAV client gave the event; null for events made in Mailflare, which use `<id>@mailflare`. */
+		davUid: text("dav_uid"),
+		/** Resource name (e.g. `abc.ics`) a CalDAV client stored the event under; null means `<id>.ics`. */
+		davName: text("dav_name"),
 		createdAt: timestamp("created_at").notNull().$defaultFn(() => new Date()),
 		updatedAt: timestamp("updated_at").notNull().$defaultFn(() => new Date()),
 	},

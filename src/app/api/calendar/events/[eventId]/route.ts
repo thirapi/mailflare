@@ -39,7 +39,7 @@ export async function PATCH(request: Request, { params }: CalendarEventRoutePara
 		const excluded = parseExcludedOccurrences(existing.excludedOccurrences);
 		if (excluded.includes(occurrence.startsAt.getTime())) return NextResponse.json({ error: "Occurrence already moved" }, { status: 409 });
 		const now = new Date();
-		const moved = { ...existing, id: newId("evt"), title: input.title.trim(), description: input.description?.trim() ?? "", location: input.location?.trim() ?? "", attendees: JSON.stringify(attendees), color: normalizeCalendarColor(input.color ?? existing.color), repeat: "none" as const, repeatDays: "[]", repeatAnchorDay: null, repeatUntil: null, excludedOccurrences: "[]", startsAt, endsAt, createdAt: now, updatedAt: now };
+		const moved = { ...existing, id: newId("evt"), davUid: null, davName: null, title: input.title.trim(), description: input.description?.trim() ?? "", location: input.location?.trim() ?? "", attendees: JSON.stringify(attendees), color: normalizeCalendarColor(input.color ?? existing.color), repeat: "none" as const, repeatDays: "[]", repeatAnchorDay: null, repeatUntil: null, excludedOccurrences: "[]", startsAt, endsAt, createdAt: now, updatedAt: now };
 		await db.insert(calendarEvents).values(moved);
 		await db.update(calendarEvents).set({ excludedOccurrences: JSON.stringify([...excluded, occurrence.startsAt.getTime()]), updatedAt: now }).where(eq(calendarEvents.id, existing.id));
 		if (attendees.length && existing.mailboxId && input.from) { const file = createCalendarInvitation({ ...moved, uid: moved.id, organizer: input.from, attendees }); await Promise.all(attendees.map((to) => sendEmail(env, { userId: user.id, mailboxId: existing.mailboxId!, from: input.from!, to, subject: `Updated invitation: ${moved.title}`, text: moved.description || `This event has been updated: ${moved.title}.`, attachments: [{ filename: "invite.ics", type: "text/calendar; charset=utf-8", content: file }] }))); }
@@ -53,7 +53,8 @@ export async function PATCH(request: Request, { params }: CalendarEventRoutePara
 	const splitAt = existing.repeat !== "none" ? effectiveFrom : null;
 	if (splitAt && splitAt > existing.startsAt) {
 		const now = new Date();
-		await db.insert(calendarEvents).values({ ...event, id: newId("evt"), createdAt: now, updatedAt: now });
+		// The split-off series is a new event to CalDAV clients, so it must not reuse the original UID or resource name.
+		await db.insert(calendarEvents).values({ ...event, id: newId("evt"), davUid: null, davName: null, createdAt: now, updatedAt: now });
 		await db.update(calendarEvents).set({ repeatUntil: splitAt, updatedAt: now }).where(eq(calendarEvents.id, existing.id));
 	} else {
 		await db.update(calendarEvents).set({ title: event.title, description: event.description, location: event.location, attendees: event.attendees, color: event.color, repeat: event.repeat, repeatDays: event.repeatDays, repeatAnchorDay: event.repeatAnchorDay, repeatUntil: event.repeatUntil, reminderMinutes: event.reminderMinutes, lastRemindedStart: null, timeZone, startsAt, endsAt, updatedAt: new Date() }).where(eq(calendarEvents.id, existing.id));

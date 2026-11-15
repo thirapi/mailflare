@@ -1,5 +1,6 @@
 import { getServerTranslator } from "@/lib/i18n/server";
 import { EmailClientsSettings } from "@/components/settings/email-clients-settings";
+import { CalendarSyncSettings } from "@/components/settings/calendar-sync-settings";
 
 export default async function EmailAppsSettingsPage() {
 	const t = await getServerTranslator();
@@ -11,6 +12,9 @@ export default async function EmailAppsSettingsPage() {
 			</div>
 			<div className="space-y-4 rounded-3xl bg-white p-6">
 				<EmailClientsSettings />
+			</div>
+			<div className="space-y-4 rounded-3xl bg-white p-6">
+				<CalendarSyncSettings />
 			</div>
 		</section>
 	</div>;

@@ -11,6 +11,7 @@ import { PwaServiceWorker } from "@/components/pwa-service-worker";
 import { ThemeSync } from "@/components/theme-sync";
 import { useMessagePolling } from "@/hooks/use-message-polling";
 import { clearMessageClientState } from "@/hooks/utils";
+import { clearOffline } from "@/lib/offline/store";
 import { clearMessageDetailCache } from "@/lib/messages/detail-cache";
 import { clearCurrentUserCache } from "@/hooks/use-current-user";
 import { AUTH_SESSION_CHANGED_EVENT } from "@/lib/auth/client";
@@ -40,6 +41,7 @@ export function Providers({ children, initialBranding }: { children: React.React
 			clearMessageClientState();
 			clearMessageDetailCache();
 			clearCurrentUserCache();
+			void clearOffline();
 			// The dashboard layout outlives an account switch, so its all-mailbox counts (the app badge) would keep the old account's number.
 			if ((event as CustomEvent<AuthSessionChangedDetail>).detail?.authenticated) {
 				window.dispatchEvent(new Event("mailflare:message-counts-changed"));

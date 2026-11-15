@@ -12,6 +12,61 @@ self.addEventListener("message", (event) => {
 	if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
 });
 
+// Offline start: pages are network-first with the last good copy as fallback, and
+// hashed build assets are cache-first. API calls are never cached here; the app keeps
+// its own offline copy of mail in IndexedDB and clears both on sign-out.
+// Keep the name in sync with OFFLINE_PAGE_CACHE in src/lib/offline/store-utils.ts.
+const PAGE_CACHE = "mailflare-pages-v1";
+const OFFLINE_FALLBACK_PATH = "/inbox";
+
+function isCacheableResponse(response) {
+	return response && response.ok && response.type === "basic" && !response.redirected;
+}
+
+async function cacheFirst(request) {
+	const cache = await caches.open(PAGE_CACHE);
+	const cached = await cache.match(request);
+	if (cached) return cached;
+	const response = await fetch(request);
+	if (isCacheableResponse(response)) await cache.put(request, response.clone());
+	return response;
+}
+
+async function networkFirst(request, fallbackPath) {
+	const cache = await caches.open(PAGE_CACHE);
+	const key = new URL(request.url);
+	key.search = "";
+	try {
+		const response = await fetch(request);
+		if (isCacheableResponse(response)) await cache.put(key.href, response.clone());
+		return response;
+	} catch (error) {
+		const cached = await cache.match(key.href)
+			?? (fallbackPath ? await cache.match(new URL(fallbackPath, self.location.origin).href) : undefined);
+		if (cached) return cached;
+		throw error;
+	}
+}
+
+self.addEventListener("fetch", (event) => {
+	const request = event.request;
+	if (request.method !== "GET") return;
+	const url = new URL(request.url);
+	if (url.origin !== self.location.origin) return;
+	const path = url.pathname;
+	if (path.startsWith("/api/") || path.startsWith("/jmap") || path.startsWith("/.well-known/") || path.startsWith("/dav") || path === "/sw.js") return;
+	// Hashed build output never changes under one URL; locale catalogs do, so they stay network-first.
+	if (path.startsWith("/_next/static/")) {
+		event.respondWith(cacheFirst(request));
+		return;
+	}
+	if (path.startsWith("/locales/")) {
+		event.respondWith(networkFirst(request));
+		return;
+	}
+	if (request.mode === "navigate") event.respondWith(networkFirst(request, OFFLINE_FALLBACK_PATH));
+});
+
 const DEFAULT_NOTIFICATION = {
 	title: "New email",
 	body: "You have a new message",

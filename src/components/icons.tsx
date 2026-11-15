@@ -2,6 +2,7 @@ import { createElement, forwardRef, type ComponentType, type SVGProps } from "re
 import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react";
 import {
 	ActivityIcon as HugeActivityIcon,
+	WifiOff01Icon as HugeWifiOffIcon,
 	AlertCircleIcon as HugeAlertCircleIcon,
 	Archive03Icon as HugeArchiveIcon,
 	ArchiveRestoreIcon as HugeArchiveRestoreIcon,
@@ -184,6 +185,7 @@ function createIcon(icon: IconSvgElement, displayName: string): LucideIcon {
 }
 
 export const Activity = createIcon(HugeActivityIcon, "Activity");
+export const WifiOff = createIcon(HugeWifiOffIcon, "WifiOff");
 export const AlertCircle = createIcon(HugeAlertCircleIcon, "AlertCircle");
 export const AlertTriangle = createIcon(HugeTriangleAlertIcon, "AlertTriangle");
 export const AlignLeft = createIcon(HugeTextAlignLeftIcon, "AlignLeft");

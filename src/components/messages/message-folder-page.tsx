@@ -55,6 +55,8 @@ import {
 } from "@/lib/messages/permanent-delete-utils";
 import clsx from "clsx";
 import { DueFollowUps } from "@/components/follow-ups/due-follow-ups";
+import { AsciiArt } from "@/components/ascii/ascii-art";
+import { useOffline } from "@/components/use-offline";
 import { getUserTimeZone, zonedDateFields } from "@/lib/time/utils";
 
 const pageSize = 25;
@@ -368,6 +370,7 @@ export function MessageFolderPage({
 	const { selectedMailbox, isLoading: mailboxesLoading } = useSelectedMailbox();
 	const { query } = useMailSearch();
 	const isMobile = useIsMobile();
+	const offline = useOffline();
 	const listState = useMessageListState();
 	const usesSharedListState = listState !== null;
 	const [internalOffset, setInternalOffset] = useState(0);
@@ -707,11 +710,23 @@ export function MessageFolderPage({
 						/>
 					))}
 				</div>
-				{!isLoading && messages.length === 0 && (
+				{!isLoading && messages.length === 0 && (offline ? (
+					<div className="flex flex-col items-center gap-3 px-6 py-10 text-center">
+						<AsciiArt scene="signal-lost" rows={compact ? 9 : 11} maxCols={compact ? 40 : 64} />
+						<p className="text-sm font-medium text-neutral-800">{t("offline.emptyTitle")}</p>
+						<p className="max-w-sm text-sm text-neutral-500">{t("offline.emptyDescription")}</p>
+					</div>
+				) : !hasActiveFilters && config.folder === "inbox" && !config.folderId && offset === 0 ? (
+					<div className="flex flex-col items-center gap-3 px-6 py-10 text-center">
+						<AsciiArt scene="envelope" rows={compact ? 11 : 14} maxCols={compact ? 40 : 64} />
+						<p className="text-sm font-medium text-neutral-800">{t("list.inboxZeroTitle")}</p>
+						<p className="text-sm text-neutral-500">{config.emptyTextKey ? t(config.emptyTextKey) : config.emptyText}</p>
+					</div>
+				) : (
 					<p className="px-6 py-4 text-sm text-neutral-500">
 						{hasActiveFilters ? t("list.noMatch") : config.emptyTextKey ? t(config.emptyTextKey) : config.emptyText}
 					</p>
-				)}
+				))}
 			</div>
 		</div>
 	);

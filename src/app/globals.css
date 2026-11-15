@@ -11,6 +11,27 @@
 	--border: #dadce0;
 	--primary: #0b57d0;
 	--primary-foreground: #ffffff;
+	/* One duration and curve for every layout move (sidebar, message list, assistant panel), so they feel alike. */
+	--layout-duration: 240ms;
+	--layout-ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	:root { --layout-duration: 0ms; }
+}
+
+.layout-motion {
+	transition-duration: var(--layout-duration);
+	transition-timing-function: var(--layout-ease);
+}
+
+/* While a column is dragged (ResizeHandle), layout follows the pointer directly instead of easing after it. */
+:root[data-resizing], :root[data-resizing] * {
+	cursor: col-resize !important;
+	user-select: none !important;
+}
+:root[data-resizing] * {
+	transition-duration: 0s !important;
 }
 
 @theme inline {

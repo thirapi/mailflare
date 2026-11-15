@@ -4,6 +4,8 @@ import { useSyncExternalStore } from "react";
 import { useLanguage } from "@/components/language-provider";
 import type { TranslationKey } from "@/lib/i18n/types";
 import { Select } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { ASCII_ANIMATION_CHANGED_EVENT, readAsciiAnimationEnabled, saveAsciiAnimationEnabled } from "@/components/ascii/ascii-preferences";
 import {
 	isStylePreference,
 	isThemePreference,
@@ -42,10 +44,18 @@ function subscribeStylePreference(onChange: () => void) {
 
 const serverStylePreference = (): StylePreference => "classic";
 
+function subscribeAsciiAnimation(onChange: () => void) {
+	window.addEventListener(ASCII_ANIMATION_CHANGED_EVENT, onChange);
+	return () => window.removeEventListener(ASCII_ANIMATION_CHANGED_EVENT, onChange);
+}
+
+const serverAsciiAnimation = () => true;
+
 export function AppearanceSettings() {
 	const { t } = useLanguage();
 	const preference = useSyncExternalStore(subscribeThemePreference, readThemePreference, serverThemePreference);
 	const style = useSyncExternalStore(subscribeStylePreference, readStylePreference, serverStylePreference);
+	const asciiAnimation = useSyncExternalStore(subscribeAsciiAnimation, readAsciiAnimationEnabled, serverAsciiAnimation);
 
 	return (
 		<div className="space-y-3">
@@ -96,6 +106,15 @@ export function AppearanceSettings() {
 						</option>
 					))}
 				</Select>
+			</label>
+			<label className="flex items-start gap-3 rounded-xl bg-neutral-50 p-4">
+				<span className="flex-1">
+					<span className="block text-sm font-medium text-neutral-900">{t("settings.asciiAnimation.label")}</span>
+					<span className="mt-1 block text-sm text-neutral-500">
+						{t("settings.asciiAnimation.description")}
+					</span>
+				</span>
+				<Switch checked={asciiAnimation} onCheckedChange={saveAsciiAnimationEnabled} aria-label={t("settings.asciiAnimation.label")} />
 			</label>
 		</div>
 	);

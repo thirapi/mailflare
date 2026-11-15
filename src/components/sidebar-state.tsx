@@ -96,7 +96,7 @@ export function SidebarProvider({ children, expandedWidth = 260, mobileOverlay =
 
 	return (
 		<SidebarContext.Provider value={{ minimal: !overlay && (minimal || forcedMinimal), width, userId, toggle, setWidth, setForcedMinimal, mobile: overlay, mobileOpen }}>
-			<div className="h-full" style={{ "--sidebar-width": widthReady ? `${minimal || forcedMinimal ? 72 : width}px` : `var(--persisted-sidebar-width, ${expandedWidth}px)`, "--sidebar-transition-duration": widthReady ? "200ms" : "0ms" } as React.CSSProperties}>
+			<div className="h-full" style={{ "--sidebar-width": widthReady ? `${minimal || forcedMinimal ? 72 : width}px` : `var(--persisted-sidebar-width, ${expandedWidth}px)`, "--sidebar-transition-duration": widthReady ? "var(--layout-duration)" : "0ms" } as React.CSSProperties}>
 				{children}
 			</div>
 		</SidebarContext.Provider>

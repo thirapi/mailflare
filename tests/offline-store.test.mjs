@@ -43,3 +43,9 @@ test("without IndexedDB the fallback passes results and errors through", async (
 	assert.equal(await store.readOffline("k"), undefined);
 	await store.clearOffline();
 });
+
+test("serving a saved copy flips the offline state and a server answer clears it", async () => {
+	assert.equal(store.isServingOffline(), false);
+	await store.withOfflineFallback("k", async () => 1);
+	assert.equal(store.isServingOffline(), false);
+});

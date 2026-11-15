@@ -4,6 +4,7 @@ import {
 	keysToEvict,
 	OFFLINE_ENTRY_LIMIT,
 	OFFLINE_PAGE_CACHE,
+	OFFLINE_STATE_EVENT,
 	type OfflineEntry,
 } from "./store-utils";
 
@@ -16,6 +17,22 @@ const STORE = "entries";
 const VERSION = 1;
 
 let dbPromise: Promise<IDBDatabase | null> | null = null;
+let servingOffline = false;
+
+/**
+ * True while the last answer came from the offline copy. `navigator.onLine` alone is not enough: it stays true on a
+ * connection that cannot reach the server (captive portals, a dead mobile signal, and after reloading while offline).
+ */
+export function isServingOffline(): boolean {
+	return servingOffline;
+}
+
+function setServingOffline(next: boolean) {
+	if (servingOffline === next) return;
+	servingOffline = next;
+	if (typeof window !== "undefined") window.dispatchEvent(new Event(OFFLINE_STATE_EVENT));
+}
+
 let writesSinceEviction = 0;
 
 function openDb(): Promise<IDBDatabase | null> {
@@ -81,6 +98,7 @@ async function evictOldEntries(): Promise<void> {
 /** Drop every offline copy: on sign-out and account switches, so the next user never sees it. */
 export async function clearOffline(): Promise<void> {
 	writesSinceEviction = 0;
+	setServingOffline(false);
 	await run("readwrite", (store) => { store.clear(); });
 	try {
 		if (typeof caches !== "undefined") await caches.delete(OFFLINE_PAGE_CACHE);
@@ -96,12 +114,14 @@ export async function clearOffline(): Promise<void> {
 export async function withOfflineFallback<T>(key: string, load: () => Promise<T>, keep: (value: T) => boolean = () => true): Promise<T> {
 	try {
 		const value = await load();
+		setServingOffline(false);
 		if (keep(value)) void saveOffline(key, value);
 		return value;
 	} catch (error) {
 		if (!isNetworkFailure(error)) throw error;
 		const cached = await readOffline<T>(key);
 		if (cached === undefined) throw error;
+		setServingOffline(true);
 		return cached;
 	}
 }

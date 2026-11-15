@@ -3,17 +3,21 @@
 import { useSyncExternalStore } from "react";
 import { WifiOff } from "@/components/icons";
 import { useLanguage } from "@/components/language-provider";
+import { isServingOffline } from "@/lib/offline/store";
+import { OFFLINE_STATE_EVENT } from "@/lib/offline/store-utils";
 
 function subscribe(onChange: () => void) {
 	window.addEventListener("online", onChange);
 	window.addEventListener("offline", onChange);
+	window.addEventListener(OFFLINE_STATE_EVENT, onChange);
 	return () => {
 		window.removeEventListener("online", onChange);
 		window.removeEventListener("offline", onChange);
+		window.removeEventListener(OFFLINE_STATE_EVENT, onChange);
 	};
 }
 
-const readOnline = () => navigator.onLine;
+const readOnline = () => navigator.onLine && !isServingOffline();
 const serverOnline = () => true;
 
 export function OfflineBanner() {

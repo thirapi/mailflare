@@ -2,6 +2,9 @@
 export const OFFLINE_ENTRY_LIMIT = 400;
 /** Entries older than this are never served, so a long-closed device does not show stale mail as current. */
 export const OFFLINE_MAX_AGE_MS = 14 * 24 * 60 * 60 * 1000;
+/** Fired on window when the app starts or stops showing offline copies instead of server answers. */
+export const OFFLINE_STATE_EVENT = "mailflare:offline-state-changed";
+
 /** Service worker cache holding pages and static assets for offline start. */
 export const OFFLINE_PAGE_CACHE = "mailflare-pages-v1";
 

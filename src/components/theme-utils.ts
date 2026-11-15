@@ -12,8 +12,47 @@ export const themeBootstrapScript = `(() => {
 		const dark = preference === "dark" || (preference === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
 		document.documentElement.classList.toggle("dark", dark);
 		document.documentElement.classList.toggle("light", !dark);
+		if (localStorage.getItem("mailflare-style") === "violet") document.documentElement.dataset.style = "violet";
 	} catch {}
 })();`;
+
+/** Visual style, independent of light/dark: "classic" is the default look, "violet" a violet accent with a dark sidebar. */
+export type StylePreference = "classic" | "violet";
+
+export const STYLE_STORAGE_KEY = "mailflare-style";
+export const STYLE_CHANGED_EVENT = "mailflare:style-changed";
+
+export function isStylePreference(value: unknown): value is StylePreference {
+	return value === "classic" || value === "violet";
+}
+
+export function readStylePreference(): StylePreference {
+	if (typeof window === "undefined") return "classic";
+	try {
+		const saved = localStorage.getItem(STYLE_STORAGE_KEY);
+		return isStylePreference(saved) ? saved : "classic";
+	} catch {
+		return "classic";
+	}
+}
+
+/** Sets `data-style` on <html>; globals.css keys the violet palette off it. Keep in sync with themeBootstrapScript. */
+export function applyStyle(preference: StylePreference): void {
+	if (typeof document === "undefined") return;
+	if (preference === "classic") delete document.documentElement.dataset.style;
+	else document.documentElement.dataset.style = preference;
+}
+
+export function saveStylePreference(preference: StylePreference): void {
+	try {
+		if (preference === "classic") localStorage.removeItem(STYLE_STORAGE_KEY);
+		else localStorage.setItem(STYLE_STORAGE_KEY, preference);
+	} catch {
+		// Storage can be unavailable in private windows; the style still applies for this page.
+	}
+	applyStyle(preference);
+	if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent(STYLE_CHANGED_EVENT, { detail: preference }));
+}
 
 export function isThemePreference(value: unknown): value is ThemePreference {
 	return value === "light" || value === "dark" || value === "system";

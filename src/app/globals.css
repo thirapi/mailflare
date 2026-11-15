@@ -515,3 +515,89 @@ button {
 		padding-inline: 0;
 	}
 }
+
+/* ── Violet style ────────────────────────────────────────────────────────────
+   An optional look chosen under Settings → Inbox → Style (data-style="violet" on <html>, set by
+   theme-utils.ts before first paint). Like the dark theme it remaps palette variables instead of
+   editing components: the blue accent scale becomes violet, the fixed page tints turn lavender, and
+   the sidebar ([data-app-sidebar]) gets its own dark palette in both light and dark mode. */
+:root[data-style="violet"]:not(.dark) {
+	--background: #f5f4fb;
+	--muted: #efedf8;
+	--primary: #6d4aff;
+	--color-blue-50: #f3f0ff;
+	--color-blue-100: #e8e2ff;
+	--color-blue-200: #d4c9ff;
+	--color-blue-300: #b7a6ff;
+	--color-blue-400: #957dff;
+	--color-blue-500: #7c5cff;
+	--color-blue-600: #6d4aff;
+	--color-blue-700: #5a36e6;
+	--color-blue-800: #4a2bbf;
+	--color-blue-900: #3a2394;
+	--color-blue-950: #241660;
+}
+:root[data-style="violet"]:not(.dark) :is(.bg-\[\#f6f8fc\], .bg-\[\#f7f9fc\]) { background-color: #f5f4fb; }
+:root[data-style="violet"]:not(.dark) :is(.bg-\[\#f2f6fc\], .bg-\[\#f1f4fa\], .bg-\[\#f0f3f9\], .hover\:bg-\[\#f2f6fc\]:hover) { background-color: #efedf8; }
+:root[data-style="violet"]:not(.dark) :is(.bg-\[\#eef3fb\], .bg-\[\#eaf1fb\], .bg-\[\#e6ecf6\], .hover\:bg-\[\#e6ecf6\]:hover) { background-color: #e8e4f6; }
+
+.dark[data-style="violet"] {
+	--background: #1c1b22;
+	--card: #25232d;
+	--muted: #2c2a35;
+	--primary: #b3a1ff;
+	--color-white: #25232d;
+	--color-neutral-50: #2c2a35;
+	--color-neutral-100: #312f3a;
+	--color-neutral-200: #3a3844;
+	--color-blue-50: #2a2340;
+	--color-blue-100: #352b55;
+	--color-blue-200: oklch(43.2% 0.232 292.759);
+	--color-blue-300: oklch(49.1% 0.27 292.581);
+	--color-blue-400: oklch(54.1% 0.281 293.009);
+	--color-blue-500: oklch(60.6% 0.25 292.717);
+	--color-blue-600: oklch(70.2% 0.183 293.541);
+	--color-blue-700: oklch(81.1% 0.111 293.571);
+	--color-blue-800: oklch(89.4% 0.057 293.283);
+	--color-blue-900: oklch(94.3% 0.029 294.588);
+	--color-blue-950: oklch(96.9% 0.016 293.756);
+}
+.dark[data-style="violet"] .bg-blue-600 { background-color: oklch(54.1% 0.281 293.009); }
+.dark[data-style="violet"] :is(.bg-blue-700, .hover\:bg-blue-700:hover) { background-color: oklch(49.1% 0.27 292.581); }
+.dark[data-style="violet"] :is(.bg-\[\#f6f8fc\], .bg-\[\#f7f9fc\]) { background-color: #1c1b22; }
+.dark[data-style="violet"] :is(.bg-\[\#f2f6fc\], .bg-\[\#f1f4fa\], .bg-\[\#f0f3f9\], .hover\:bg-\[\#f2f6fc\]:hover) { background-color: #2c2a35; }
+.dark[data-style="violet"] :is(.bg-\[\#eef3fb\], .bg-\[\#eaf1fb\], .bg-\[\#e6ecf6\], .hover\:bg-\[\#e6ecf6\]:hover) { background-color: #34313f; }
+
+/* The dark sidebar: light text on deep violet, whichever mode the rest of the page is in. */
+[data-style="violet"] [data-app-sidebar] {
+	color-scheme: dark;
+	color: var(--color-neutral-700);
+	--color-white: #2a2450;
+	--color-neutral-50: #2a2450;
+	--color-neutral-100: #302a5a;
+	--color-neutral-200: #3a3366;
+	--color-neutral-300: #5b5480;
+	--color-neutral-400: #9690b8;
+	--color-neutral-500: #aaa4c8;
+	--color-neutral-600: #c4bfdc;
+	--color-neutral-700: #ddd9ee;
+	--color-neutral-800: #ebe8f6;
+	--color-neutral-900: #f4f2fb;
+	--color-neutral-950: #ffffff;
+	--color-stone-200: #3a3366;
+	--color-gray-200: #3a3366;
+	--color-blue-50: #352a6e;
+	--color-blue-100: #43358a;
+	--color-blue-200: #5141a6;
+	--color-blue-700: #d9d0ff;
+	--color-blue-900: #f1edff;
+	--color-blue-950: #ffffff;
+}
+/* :root and :not(.dark) match the page-tint rules above, which would otherwise outrank this one. */
+:root[data-style="violet"]:not(.dark) [data-app-sidebar].bg-\[\#f6f8fc\] { background-color: #1f1a3a; }
+.dark[data-style="violet"] [data-app-sidebar].bg-\[\#f6f8fc\] { background-color: #17152b; }
+[data-style="violet"] [data-app-sidebar] :is(.text-white, .fill-white) { color: #fff; fill: #fff; }
+/* "New message": a solid violet button, as the main action of the sidebar. */
+[data-style="violet"] [data-nav-primary] { background-color: #6d4aff; color: #fff; }
+[data-style="violet"] [data-nav-primary]:hover { background-color: #5a36e6; }
+[data-style="violet"] [data-nav-primary] svg { color: #fff; }

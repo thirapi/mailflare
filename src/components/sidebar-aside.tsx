@@ -32,6 +32,7 @@ export function SidebarAside({ children, className }: { children: ReactNode; cla
 				className={clsx("fixed inset-0 z-[100] bg-black/40 transition-opacity duration-200 ease-out motion-reduce:transition-none md:hidden", mobileOpen ? "opacity-100" : "pointer-events-none opacity-0")}
 			/>
 			<aside
+				data-app-sidebar
 				aria-hidden={hidden}
 				inert={hidden}
 				className={clsx(

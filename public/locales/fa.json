@@ -420,6 +420,7 @@
 	"account.profilePicture": "تصویر نمایه {name}",
 	"nav.loading": "در حال بارگذاری",
 	"a11y.skipToContent": "پرش به محتوای اصلی",
+	"offline.banner": "You're offline. Showing emails saved on this device; sending and other changes need a connection.",
 	"admin.nav.overview": "نمای کلی",
 	"admin.nav.email": "ایمیل",
 	"admin.nav.mailboxes": "صندوق‌های پستی",

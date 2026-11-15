@@ -420,6 +420,7 @@
 	"account.profilePicture": "{name} ಅವರ ಪ್ರೊಫೈಲ್ ಚಿತ್ರ",
 	"nav.loading": "ಲೋಡ್ ಆಗುತ್ತಿದೆ",
 	"a11y.skipToContent": "ಮುಖ್ಯ ವಿಷಯಕ್ಕೆ ಹೋಗಿ",
+	"offline.banner": "You're offline. Showing emails saved on this device; sending and other changes need a connection.",
 	"admin.nav.overview": "ಅವಲೋಕನ",
 	"admin.nav.email": "ಇಮೇಲ್",
 	"admin.nav.mailboxes": "ಮೇಲ್‌ಬಾಕ್ಸ್‌ಗಳು",

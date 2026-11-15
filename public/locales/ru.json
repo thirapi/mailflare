@@ -430,6 +430,7 @@
 	"account.profilePicture": "Фото профиля: {name}",
 	"nav.loading": "Загрузка",
 	"a11y.skipToContent": "Перейти к основному содержимому",
+	"offline.banner": "You're offline. Showing emails saved on this device; sending and other changes need a connection.",
 	"admin.nav.overview": "Обзор",
 	"admin.nav.email": "Почта",
 	"admin.nav.mailboxes": "Почтовые ящики",

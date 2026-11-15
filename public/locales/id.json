@@ -415,6 +415,7 @@
 	"account.profilePicture": "Foto profil {name}",
 	"nav.loading": "Memuat",
 	"a11y.skipToContent": "Langsung ke konten utama",
+	"offline.banner": "Anda sedang offline. Menampilkan email yang tersimpan di perangkat ini; mengirim dan mengubah email baru bisa setelah tersambung kembali.",
 	"admin.nav.overview": "Ringkasan",
 	"admin.nav.email": "Email",
 	"admin.nav.mailboxes": "Kotak surat",

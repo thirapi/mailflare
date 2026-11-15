@@ -415,6 +415,7 @@
 	"account.profilePicture": "Ảnh hồ sơ của {name}",
 	"nav.loading": "Đang tải",
 	"a11y.skipToContent": "Chuyển đến nội dung chính",
+	"offline.banner": "You're offline. Showing emails saved on this device; sending and other changes need a connection.",
 	"admin.nav.overview": "Tổng quan",
 	"admin.nav.email": "Email",
 	"admin.nav.mailboxes": "Hộp thư",

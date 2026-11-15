@@ -420,6 +420,7 @@
 	"account.profilePicture": "Hoton bayanan {name}",
 	"nav.loading": "Ana loda",
 	"a11y.skipToContent": "Tsallaka zuwa babban abun ciki",
+	"offline.banner": "You're offline. Showing emails saved on this device; sending and other changes need a connection.",
 	"admin.nav.overview": "Bayani a taƙaice",
 	"admin.nav.email": "Imel",
 	"admin.nav.mailboxes": "Akwatunan saƙo",

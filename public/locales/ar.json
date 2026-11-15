@@ -440,6 +440,7 @@
 	"account.profilePicture": "صورة الملف الشخصي لـ {name}",
 	"nav.loading": "جارٍ التحميل",
 	"a11y.skipToContent": "انتقل إلى المحتوى الرئيسي",
+	"offline.banner": "You're offline. Showing emails saved on this device; sending and other changes need a connection.",
 	"admin.nav.overview": "نظرة عامة",
 	"admin.nav.email": "البريد",
 	"admin.nav.mailboxes": "صناديق البريد",

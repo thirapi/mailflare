@@ -425,6 +425,7 @@
 	"account.profilePicture": "Foto de perfil de {name}",
 	"nav.loading": "A carregar",
 	"a11y.skipToContent": "Saltar para o conteúdo principal",
+	"offline.banner": "You're offline. Showing emails saved on this device; sending and other changes need a connection.",
 	"admin.nav.overview": "Visão geral",
 	"admin.nav.email": "Email",
 	"admin.nav.mailboxes": "Caixas de correio",

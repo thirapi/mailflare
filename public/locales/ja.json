@@ -415,6 +415,7 @@
 	"account.profilePicture": "{name}のプロフィール画像",
 	"nav.loading": "読み込み中",
 	"a11y.skipToContent": "メインコンテンツへ移動",
+	"offline.banner": "You're offline. Showing emails saved on this device; sending and other changes need a connection.",
 	"admin.nav.overview": "概要",
 	"admin.nav.email": "メール",
 	"admin.nav.mailboxes": "メールボックス",

@@ -426,6 +426,7 @@
 	"account.profilePicture": "{name} profile picture",
 	"nav.loading": "Loading",
 	"a11y.skipToContent": "Skip to main content",
+	"offline.banner": "You're offline. Showing emails saved on this device; sending and other changes need a connection.",
 	"admin.nav.overview": "Overview",
 	"admin.nav.email": "Email",
 	"admin.nav.mailboxes": "Mailboxes",

@@ -2,6 +2,7 @@ import { authFetch } from "@/lib/auth/client";
 import { parseSearchQuery } from "@/lib/search/query-utils";
 import { getUserTimeZone } from "@/lib/time/utils";
 import { setCachedMessageRead } from "@/lib/messages/detail-cache";
+import { withOfflineFallback } from "@/lib/offline/store";
 import { isReadOnlyChange } from "@/lib/messages/change-events";
 import type { MessageFilterOptions, MessageFolder } from "./types";
 import type { MessageCounts, MessageListResponse } from "./types";
@@ -145,9 +146,11 @@ export async function fetchMessageCounts(mailboxId?: string | null, force = fals
 		const params = new URLSearchParams();
 		if (mailboxId) params.set("mailboxId", mailboxId);
 		const query = params.toString();
-		const res = await authFetch(`/api/messages/counts${query ? `?${query}` : ""}`);
-		const data = (await res.json()) as { counts?: MessageCounts };
-		const counts = data.counts;
+		const counts = await withOfflineFallback(`counts:${key}`, async () => {
+			const res = await authFetch(`/api/messages/counts${query ? `?${query}` : ""}`);
+			const data = (await res.json()) as { counts?: MessageCounts };
+			return data.counts;
+		}, (value) => value !== undefined);
 		if (
 			counts &&
 			requestGeneration === messageCacheGeneration &&
@@ -175,8 +178,11 @@ export async function fetchMessageList(params: URLSearchParams, force = false): 
 	if (!force && messageListCache.has(key)) return messageListCache.get(key) ?? {};
 	if (!force && messageListRequests.has(key)) return messageListRequests.get(key) ?? {};
 	const requestGeneration = messageCacheGeneration;
-	const request = authFetch(`/api/messages?${key}`)
-		.then((res) => res.json())
+	const request = withOfflineFallback(
+		`list:${key}`,
+		() => authFetch(`/api/messages?${key}`).then((res) => res.json()),
+		(data) => Array.isArray((data as MessageListResponse)?.messages),
+	)
 		.then((data) => {
 			const response = data as MessageListResponse;
 			if (requestGeneration === messageCacheGeneration) {

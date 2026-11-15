@@ -420,6 +420,7 @@
 	"account.profilePicture": "Profilbild von {name}",
 	"nav.loading": "Wird geladen",
 	"a11y.skipToContent": "Zum Hauptinhalt springen",
+	"offline.banner": "You're offline. Showing emails saved on this device; sending and other changes need a connection.",
 	"admin.nav.overview": "Übersicht",
 	"admin.nav.email": "E-Mail",
 	"admin.nav.mailboxes": "Postfächer",

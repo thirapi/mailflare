@@ -420,6 +420,7 @@
 	"account.profilePicture": "{name} ప్రొఫైల్ చిత్రం",
 	"nav.loading": "లోడ్ అవుతోంది",
 	"a11y.skipToContent": "ప్రధాన కంటెంట్‌కు వెళ்లండి",
+	"offline.banner": "You're offline. Showing emails saved on this device; sending and other changes need a connection.",
 	"admin.nav.overview": "అవలోకనం",
 	"admin.nav.email": "ఇమెయిల్",
 	"admin.nav.mailboxes": "మెయిల్‌బాక్స్‌లు",

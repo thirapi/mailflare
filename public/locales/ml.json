@@ -420,6 +420,7 @@
 	"account.profilePicture": "{name} ന്റെ പ്രൊഫൈൽ ചിത്രം",
 	"nav.loading": "ലോഡ് ചെയ്യുന്നു",
 	"a11y.skipToContent": "പ്രധാന ഉള്ളടക്കത്തിലേക്ക് പോകുക",
+	"offline.banner": "You're offline. Showing emails saved on this device; sending and other changes need a connection.",
 	"admin.nav.overview": "അവലോകനം",
 	"admin.nav.email": "ഇമെയിൽ",
 	"admin.nav.mailboxes": "മെയിൽബോക്സുകൾ",

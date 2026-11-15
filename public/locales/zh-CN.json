@@ -415,6 +415,7 @@
 	"account.profilePicture": "{name} 的头像",
 	"nav.loading": "正在加载",
 	"a11y.skipToContent": "跳到主要内容",
+	"offline.banner": "You're offline. Showing emails saved on this device; sending and other changes need a connection.",
 	"admin.nav.overview": "概览",
 	"admin.nav.email": "邮件",
 	"admin.nav.mailboxes": "邮箱",

@@ -420,6 +420,7 @@
 	"account.profilePicture": "{name}-এর প্রোফাইল ছবি",
 	"nav.loading": "লোড হচ্ছে",
 	"a11y.skipToContent": "প্রধান বিষয়বস্তুতে যান",
+	"offline.banner": "You're offline. Showing emails saved on this device; sending and other changes need a connection.",
 	"admin.nav.overview": "সংক্ষিপ্ত বিবরণ",
 	"admin.nav.email": "ইমেইল",
 	"admin.nav.mailboxes": "মেইলবক্স",

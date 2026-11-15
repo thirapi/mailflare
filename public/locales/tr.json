@@ -411,6 +411,7 @@
 	"account.profilePicture": "{name} profil fotoğrafı",
 	"nav.loading": "Yükleniyor",
 	"a11y.skipToContent": "Ana içeriğe geç",
+	"offline.banner": "You're offline. Showing emails saved on this device; sending and other changes need a connection.",
 	"admin.nav.overview": "Genel Bakış",
 	"admin.nav.email": "E-posta",
 	"admin.nav.mailboxes": "Posta kutuları",

@@ -419,6 +419,7 @@
 	"account.profilePicture": "{name} 프로필 사진",
 	"nav.loading": "불러오는 중",
 	"a11y.skipToContent": "본문으로 건너뛰기",
+	"offline.banner": "You're offline. Showing emails saved on this device; sending and other changes need a connection.",
 	"admin.nav.overview": "개요",
 	"admin.nav.email": "이메일",
 	"admin.nav.mailboxes": "메일함",

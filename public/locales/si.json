@@ -420,6 +420,7 @@
 	"account.profilePicture": "{name} ගේ පැතිකඩ පින්තූරය",
 	"nav.loading": "පූරණය වෙමින්",
 	"a11y.skipToContent": "ප්‍රධාන අන්තර්ගතයට යන්න",
+	"offline.banner": "You're offline. Showing emails saved on this device; sending and other changes need a connection.",
 	"admin.nav.overview": "දළ විශ්ලේෂණය",
 	"admin.nav.email": "ඊමේල්",
 	"admin.nav.mailboxes": "තැපැල් පෙට්ටි",

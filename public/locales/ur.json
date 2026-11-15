@@ -420,6 +420,7 @@
 	"account.profilePicture": "{name} کی پروفائل تصویر",
 	"nav.loading": "لوڈ ہو رہا ہے",
 	"a11y.skipToContent": "مرکزی مواد پر جائیں",
+	"offline.banner": "You're offline. Showing emails saved on this device; sending and other changes need a connection.",
 	"admin.nav.overview": "جائزہ",
 	"admin.nav.email": "ای میل",
 	"admin.nav.mailboxes": "میل باکسز",

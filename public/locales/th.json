@@ -419,6 +419,7 @@
 	"account.profilePicture": "รูปโปรไฟล์ของ {name}",
 	"nav.loading": "กำลังโหลด",
 	"a11y.skipToContent": "ข้ามไปยังเนื้อหาหลัก",
+	"offline.banner": "You're offline. Showing emails saved on this device; sending and other changes need a connection.",
 	"admin.nav.overview": "ภาพรวม",
 	"admin.nav.email": "อีเมล",
 	"admin.nav.mailboxes": "กล่องจดหมาย",

@@ -420,6 +420,7 @@
 	"account.profilePicture": "Picha ya wasifu ya {name}",
 	"nav.loading": "Inapakia",
 	"a11y.skipToContent": "Ruka hadi maudhui makuu",
+	"offline.banner": "You're offline. Showing emails saved on this device; sending and other changes need a connection.",
 	"admin.nav.overview": "Muhtasari",
 	"admin.nav.email": "Barua pepe",
 	"admin.nav.mailboxes": "Visanduku vya barua",

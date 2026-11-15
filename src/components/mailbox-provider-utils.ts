@@ -1,4 +1,5 @@
 import { authFetch, getClientSessionToken } from "@/lib/auth/client";
+import { withOfflineFallback } from "@/lib/offline/store";
 import type { MailboxOption } from "./mailbox-provider";
 
 let mailboxesCache: MailboxOption[] | null = null;
@@ -38,8 +39,11 @@ export async function fetchMailboxOptions(force = false): Promise<MailboxOption[
 
 	const requestGeneration = cacheGeneration;
 	mailboxesRequestSessionToken = sessionToken;
-	mailboxesRequest = authFetch("/api/mailboxes")
-		.then((res) => res.json())
+	mailboxesRequest = withOfflineFallback(
+		"mailboxes",
+		() => authFetch("/api/mailboxes").then((res) => res.json()),
+		(data) => Array.isArray((data as { mailboxes?: MailboxOption[] })?.mailboxes),
+	)
 		.then((data) => {
 			const items = ((data as { mailboxes?: MailboxOption[] }).mailboxes ?? []).map((m) => ({
 				id: m.id,

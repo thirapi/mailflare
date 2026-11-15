@@ -420,6 +420,7 @@
 	"account.profilePicture": "{name} ਦੀ ਪ੍ਰੋਫ਼ਾਈਲ ਫੋਟੋ",
 	"nav.loading": "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ",
 	"a11y.skipToContent": "ਮੁੱਖ ਸਮੱਗਰੀ ’ਤੇ ਜਾਓ",
+	"offline.banner": "You're offline. Showing emails saved on this device; sending and other changes need a connection.",
 	"admin.nav.overview": "ਸੰਖੇਪ ਜਾਣਕਾਰੀ",
 	"admin.nav.email": "ਈਮੇਲ",
 	"admin.nav.mailboxes": "ਮੇਲਬਾਕਸ",

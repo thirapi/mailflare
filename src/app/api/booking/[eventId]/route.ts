@@ -10,7 +10,6 @@ import { getEnv } from "@/lib/cloudflare";
 import { calendarAccessError } from "@/lib/calendar/api-auth";
 import type { BookingEventRouteContext } from "./types";
 import { validBookingHostIds } from "@/lib/booking/hosts";
-import { getLicenseEntitlements } from "@/lib/licenses/service";
 import { ConfirmationTemplatesUnavailableError, saveConfirmationTemplate, withConfirmationTemplates } from "@/lib/booking/confirmation-templates";
 import { parseConfirmationTemplateInput } from "@/lib/booking/confirmation-utils";
 
@@ -28,7 +27,7 @@ export async function PATCH(request: Request, { params }: BookingEventRouteConte
 	if (confirmation === null) return NextResponse.json({ error: "Check the confirmation email's subject and message." }, { status: 400 });
 	const { eventId } = await params;
 	const db = getDb(env);
-	const canManageHosts = user.role === "admin" && (await getLicenseEntitlements(env)).canShareMailboxes;
+	const canManageHosts = user.role === "admin";
 	const hostIds = await validBookingHostIds(db, user.id, input.hostIds, canManageHosts);
 	if (!hostIds) return NextResponse.json({ error: "Choose users from the host list." }, { status: 400 });
 	const [taken] = await db.select({ id: bookingEvents.id }).from(bookingEvents).where(and(eq(bookingEvents.userId, user.id), eq(bookingEvents.slug, input.slug))).limit(1);

@@ -1,3 +1,4 @@
+import { DAV_SCOPES } from "@/lib/dav/utils";
 import type { MailboxOption } from "@/components/mailbox-provider";
 import { clearMailboxesCache } from "@/components/mailbox-provider-utils";
 import { authFetch } from "@/lib/auth/client";
@@ -110,6 +111,19 @@ export async function createJmapApiKey(name: string, mailboxIds: string[]): Prom
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({ name, scopes: ["jmap"], mailboxIds }),
+	});
+	const data = (await res.json().catch(() => ({}))) as { key?: string; error?: unknown };
+	if (!res.ok || !data.key) throw new Error(typeof data.error === "string" ? data.error : "Could not create a key");
+	window.dispatchEvent(new Event("mailflare:api-keys-changed"));
+	return data.key;
+}
+
+/** An app password for calendar and contacts apps: CalDAV read-write, CardDAV read-only, no mail access. */
+export async function createDavApiKey(name: string): Promise<string> {
+	const res = await authFetch("/api/api-keys", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({ name, scopes: [...DAV_SCOPES], mailboxIds: [] }),
 	});
 	const data = (await res.json().catch(() => ({}))) as { key?: string; error?: unknown };
 	if (!res.ok || !data.key) throw new Error(typeof data.error === "string" ? data.error : "Could not create a key");

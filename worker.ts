@@ -37,6 +37,8 @@ import { runAccountRetention } from "./src/lib/accounts/deletion";
 import { runJmapChangeRetention } from "./src/lib/jmap/changes";
 import { runFollowUpReminders } from "./src/lib/follow-ups/service";
 import { runCalendarReminders } from "./src/lib/calendar/reminders";
+import { handleDavRequest } from "./src/lib/dav/handler";
+import { isDavPath } from "./src/lib/dav/utils";
 export { RealtimeHub } from "./src/lib/realtime/hub";
 
 export default {
@@ -64,6 +66,9 @@ export default {
 			hubRequest.headers.set("X-Mailflare-Realtime-User", user.id);
 			return hub.fetch(hubRequest);
 		}
+
+		// CalDAV/CardDAV use PROPFIND and REPORT, which Next route handlers cannot receive.
+		if (isDavPath(url.pathname)) return runWithD1Session(d1Session?.session, () => handleDavRequest(request, env));
 
 		const response = await runWithD1Session(d1Session?.session, () => vinextHandler.fetch(request, env, ctx));
 		return withD1BookmarkCookie(request, response, d1Session?.session);

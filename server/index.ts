@@ -16,6 +16,8 @@ import { createNodeRuntime } from "./runtime/env";
 import { applyMigrations } from "./runtime/migrate";
 import { startScheduler } from "./runtime/scheduler";
 import { startSmtpListener } from "./runtime/smtp";
+import { handleDavRequest } from "@/lib/dav/handler";
+import { isDavPath } from "@/lib/dav/utils";
 
 /**
  * The self-hosted entrypoint: one Node process serving the Next app, the
@@ -71,7 +73,13 @@ async function main() {
 		delete request.headers["x-forwarded-for"];
 		delete request.headers["x-mailflare-client-ip"];
 		if (clientIp) request.headers["x-mailflare-client-ip"] = clientIp;
-		void handle(request, response, parse(request.url ?? "/", true));
+		const parsedUrl = parse(request.url ?? "/", true);
+		// CalDAV/CardDAV use PROPFIND and REPORT, which Next route handlers cannot receive.
+		if (isDavPath(parsedUrl.pathname ?? "/")) {
+			void serveDav(env, request, response);
+			return;
+		}
+		void handle(request, response, parsedUrl);
 	});
 
 	const wss = new WebSocketServer({ noServer: true });
@@ -127,3 +135,34 @@ main().catch((error) => {
 	console.error("Mailflare failed to start", error);
 	process.exit(1);
 });
+
+async function serveDav(env: CloudflareEnv, request: import("node:http").IncomingMessage, response: import("node:http").ServerResponse) {
+	try {
+		const chunks: Buffer[] = [];
+		let size = 0;
+		for await (const chunk of request) {
+			size += (chunk as Buffer).length;
+			if (size > 2 * 1024 * 1024) {
+				response.writeHead(413).end();
+				return;
+			}
+			chunks.push(chunk as Buffer);
+		}
+		const headers = new Headers();
+		for (const [name, value] of Object.entries(request.headers)) {
+			if (Array.isArray(value)) for (const item of value) headers.append(name, item);
+			else if (value !== undefined) headers.set(name, value);
+		}
+		const protocol = request.headers["x-forwarded-proto"] === "https" ? "https" : "http";
+		const url = new URL(request.url ?? "/", `${protocol}://${request.headers.host ?? "localhost"}`);
+		const method = request.method ?? "GET";
+		const body = chunks.length && method !== "GET" && method !== "HEAD" ? Buffer.concat(chunks) : undefined;
+		const result = await handleDavRequest(new Request(url, { method, headers, body }), env);
+		response.writeHead(result.status, Object.fromEntries(result.headers));
+		response.end(Buffer.from(await result.arrayBuffer()));
+	} catch (error) {
+		console.error("[dav] request failed", error);
+		if (!response.headersSent) response.writeHead(500);
+		response.end();
+	}
+}

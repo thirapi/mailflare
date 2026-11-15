@@ -17,6 +17,7 @@ export const STANDARD_KEY_SCOPES: { value: ApiKeyScope; labelKey: TranslationKey
 	{ value: "send", labelKey: "apiKeys.send.label", descriptionKey: "apiKeys.send.description" },
 	{ value: "calendar:read", labelKey: "apiKeys.calendarRead.label", descriptionKey: "apiKeys.calendarRead.description" },
 	{ value: "calendar:write", labelKey: "apiKeys.calendarWrite.label", descriptionKey: "apiKeys.calendarWrite.description" },
+	{ value: "contacts:read", labelKey: "apiKeys.contactsRead.label", descriptionKey: "apiKeys.contactsRead.description" },
 ];
 
 async function responseData(response: Response): Promise<{ error?: unknown; key?: string; apiKeys?: ManagedApiKey[] }> {

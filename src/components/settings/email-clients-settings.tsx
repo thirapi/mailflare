@@ -131,7 +131,7 @@ export function EmailClientsSettings() {
 	);
 }
 
-function Field({ label, value, onCopy, copied, mono }: { label: string; value: string; onCopy: (label: string, value: string) => void; copied: string | null; mono?: boolean }) {
+export function Field({ label, value, onCopy, copied, mono }: { label: string; value: string; onCopy: (label: string, value: string) => void; copied: string | null; mono?: boolean }) {
 	const { t } = useLanguage();
 	return (
 		<div className="flex items-center gap-3">
